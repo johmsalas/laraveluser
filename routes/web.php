@@ -21,3 +21,5 @@ Route::get('/home', 'HomeController@index');
 
 Route::get('auth/facebook', 'Auth\FacebookAuthController@redirectToProvider');
 Route::get('auth/facebook/callback', 'Auth\FacebookAuthController@handleProviderCallback');
+
+Route::get('user/activation/{token}', 'Auth\LoginController@activateUser')->name('user.activate');
