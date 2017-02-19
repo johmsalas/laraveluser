@@ -24,4 +24,7 @@ Route::get('auth/facebook/callback', 'Auth\FacebookAuthController@handleProvider
 
 Route::get('user/activation/{token}', 'Auth\LoginController@activateUser')->name('user.activate');
 
-Route::resource('users', 'UserController');
+Route::get('users/{id}/delete', ['as' => 'users.delete', 'uses' => 'UserController@destroy']);
+Route::resource('users', 'UserController', ['except' => [
+    'create', 'store', 'destroy'
+]]);

@@ -16,7 +16,7 @@ class UserController extends Controller
     {
         $users = User::all();
 
-        return view('users/users', [
+        return view('users/list', [
             'users' => $users
         ]);
     }
@@ -50,7 +50,9 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+        return view('users/view', [
+            'user' => $user
+        ]);
     }
 
     /**
@@ -61,7 +63,9 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        //
+        return view('users/edit', [
+            'user' => $user
+        ]);
     }
 
     /**
@@ -73,7 +77,14 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //
+        $this->validate($request, [
+            'name' => 'required|max:150',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+        ]);
+
+        $user->fill($request->all())->save();
+
+        return redirect()->route('users.show', $user->id);
     }
 
     /**
@@ -84,6 +95,10 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        $user->delete();
+
+        return redirect()
+            ->route('users.index')
+            ->with('message', $user . ' ' . trans('was deleted'));
     }
 }
