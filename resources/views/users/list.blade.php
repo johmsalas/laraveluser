@@ -4,6 +4,9 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
+            <ol class="breadcrumb">
+              <li class="active">Users</li>
+            </ol>
             <div class="panel panel-default">
                 <div class="panel-heading">Users</div>
                 <div class="panel-body">
@@ -11,7 +14,7 @@
                         <tbody>
                             @foreach ($users as $user)
                                 <tr>
-                                    <td>{{ title_case($user->name) }}</td>
+                                    <td><a href="{{ route('users.show', $user->id) }}">{{ title_case($user->name) }}</a></td>
                                     <td>{{ strtolower($user->email) }}</td>
                                     @if ($user->id > 1)
                                         <td><a href="{{ route('users.edit', $user->id) }}"><i class="glyphicon glyphicon-edit"></i></a></td>
