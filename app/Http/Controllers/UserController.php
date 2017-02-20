@@ -4,12 +4,25 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Repositories\ExportRepository;
+use App\Repositories\ImportRepository;
 use Gate;
 use App\User;
 use App\Role;
 
 class UserController extends Controller
 {
+    protected $exportRepository;
+    protected $importRepository;
+
+    public function __construct(
+        ExportRepository $exportRepository,
+        ImportRepository $importRepository
+    ) {
+        $this->exportRepository = $exportRepository;
+        $this->importRepository = $importRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -132,5 +145,24 @@ class UserController extends Controller
         return redirect()
             ->route('users.index')
             ->with('message', $user . ' ' . trans('was deleted'));
+    }
+
+    public function export($format = 'xlsx') {
+        $filename = date('Y-m-d') . ' ' . trans('Users');
+        $users = User::select('name', 'email', 'phone')->get();
+        switch ($format) {
+            case 'xls':
+                $this->exportRepository->downloadXLS($filename, $users);
+                break;
+            case 'csv':
+                $this->exportRepository->downloadCSV($filename, $users);
+                break;
+            case 'tsv':
+                $this->exportRepository->downloadTSV($filename, $users);
+                break;
+            default:
+                $this->exportRepository->downloadXLSX($filename, $users);
+                break;
+        }
     }
 }

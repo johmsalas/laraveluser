@@ -4,12 +4,28 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <ol class="breadcrumb">
                         <li class="active">Users</li>
                     </ol>
+                </div>
+                <div class="panel-heading">
+                    <div class="btn-group" role="group" aria-label="...">
+                        <a class="btn btn-default" href="#">Import</a>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Export
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a href="{{ route('users-export', ['xls']) }}">XLS</a></li>
+                                <li><a href="{{ route('users-export', ['xlsx']) }}">XLSX</a></li>
+                                <li><a href="{{ route('users-export', ['tsv']) }}">TSV</a></li>
+                                <li><a href="{{ route('users-export', ['csv']) }}">CSV</a></li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
                 <div class="panel-body">
                     <table class="table">
