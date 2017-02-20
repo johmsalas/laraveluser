@@ -16,12 +16,20 @@
                                 <tr>
                                     <td><a href="{{ route('users.show', $user->id) }}">{{ title_case($user->name) }}</a></td>
                                     <td>{{ strtolower($user->email) }}</td>
-                                    @if ($user->id > 1)
-                                        <td><a href="{{ route('users.edit', $user->id) }}"><i class="glyphicon glyphicon-edit"></i></a></td>
-                                        <td><a href="{{ route('users.delete', $user->id) }}"><i class="glyphicon glyphicon-remove-circle"></i></a></td>
-                                    @else
-                                        <td colspan="2"></td>
-                                    @endif
+                                    <td>
+                                        @can ('edit users')
+                                            <a href="{{ route('users.edit', $user->id) }}">
+                                                <i class="glyphicon glyphicon-edit"></i>
+                                            </a>
+                                        @endcan
+                                    </td>
+                                    <td>
+                                        @can ('delete users')
+                                            <a href="{{ route('users.delete', $user->id) }}">
+                                                <i class="glyphicon glyphicon-remove-circle"></i>
+                                            </a>
+                                        @endcan
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

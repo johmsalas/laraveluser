@@ -41,6 +41,20 @@
                                 </span>
                             @endif
                         </div>
+                        <div class="form-group">
+                            <label for="email">Roles</label>
+                            <div class="permissions">
+                                @foreach ($roles as $role)
+                                    <div class="role checkbox">
+                                        <label>
+                                            <input name="roles[]" type="checkbox" value="{{ $role->id }}"
+                                                {{ ($user->hasRole($role->name)) ? 'checked="checked"' : '' }}>
+                                            {{ $role->label }}
+                                        </label>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
                         <button type="submit" class="btn btn-default">Save</button>
                     </form>
                 </div>

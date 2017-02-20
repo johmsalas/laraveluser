@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Gate;
+use App\User;
+use App\Role;
 
 class UserController extends Controller
 {
@@ -14,8 +17,11 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        if (Gate::denies('see users')) {
+            return redirect()->route('users.show', Auth::user()->id);
+        }
 
+        $users = User::all();
         return view('users/list', [
             'users' => $users
         ]);
@@ -28,7 +34,9 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        if (Gate::denies('create users')) {
+            return redirect()->route('users.show', Auth::user()->id);
+        }
     }
 
     /**
@@ -39,7 +47,9 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if (Gate::denies('create users')) {
+            return redirect()->route('users.show', Auth::user()->id);
+        }
     }
 
     /**
@@ -50,8 +60,14 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
+        if (Gate::denies('see users') && Gate::denies('see own user', $user)) {
+            return redirect()->route('users.show', Auth::user()->id);
+        }
+
+        $roles = $user->roles->implode('label', ', ');
         return view('users/view', [
-            'user' => $user
+            'user' => $user,
+            'roles' => $roles
         ]);
     }
 
@@ -63,8 +79,15 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        if (Gate::denies('edit users') && Gate::denies('edit own user', $user)) {
+            return redirect()->route('users.show', Auth::user()->id);
+        }
+
+        $roles = Role::all();
+
         return view('users/edit', [
-            'user' => $user
+            'user' => $user,
+            'roles' => $roles
         ]);
     }
 
@@ -77,12 +100,17 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
+        if (Gate::denies('edit users') && Gate::denies('edit own user', $user)) {
+            return redirect()->route('users.show', Auth::user()->id);
+        }
+
         $this->validate($request, [
             'name' => 'required|max:150',
             'email' => 'required|email|unique:users,email,' . $user->id,
         ]);
 
         $user->fill($request->all())->save();
+        $user->roles()->sync($request->input('roles'));
 
         return redirect()->route('users.show', $user->id);
     }
@@ -95,6 +123,10 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        if (Gate::denies('delete users') && Gate::denies('delete own user', $user)) {
+            return redirect()->route('users.show', Auth::user()->id);
+        }
+
         $user->delete();
 
         return redirect()
