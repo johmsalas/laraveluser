@@ -4,16 +4,17 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <ol class="breadcrumb">
-                @can ('see users')
-                    <li><a href="{{ route('users.index') }}">Users</a></li>
-                @elsecan
-                    <li>Users</li>
-                @endcan
-                <li class="active">{{ title_case($user->name) }}</li>
-            </ol>
             <div class="panel panel-default">
-                <div class="panel-heading">Editing {{ title_case($user->name) }}</div>
+                <div class="panel-heading">
+                    <ol class="breadcrumb">
+                        @can ('see users')
+                            <li><a href="{{ route('users.index') }}">Users</a></li>
+                        @elsecan
+                            <li>Users</li>
+                        @endcan
+                        <li class="active">{{ title_case($user->name) }}</li>
+                    </ol>
+                </div>
                 <div class="panel-body">
                     <form method="POST" action="{{ route('users.update', $user->id) }}" enctype="multipart/form-data">
                         <div class="form-group">

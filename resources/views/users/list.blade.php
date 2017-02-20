@@ -4,13 +4,22 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <ol class="breadcrumb">
-              <li class="active">Users</li>
-            </ol>
+
             <div class="panel panel-default">
-                <div class="panel-heading">Users</div>
+                <div class="panel-heading">
+                    <ol class="breadcrumb">
+                        <li class="active">Users</li>
+                    </ol>
+                </div>
                 <div class="panel-body">
                     <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th colspan="2"></th>
+                            </tr>
+                        </thead>
                         <tbody>
                             @foreach ($users as $user)
                                 <tr>
@@ -34,6 +43,7 @@
                             @endforeach
                         </tbody>
                     </table>
+                    {{ $users->links() }}
                 </div>
             </div>
         </div>

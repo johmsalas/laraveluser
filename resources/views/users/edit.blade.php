@@ -4,13 +4,14 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <ol class="breadcrumb">
-                <li><a href="{{ route('users.index') }}">Users</a></li>
-                <li><a href="{{ route('users.show', $user->id) }}">{{ title_case($user->name) }}</a></li>
-                <li class="active">Edit</li>
-            </ol>
             <div class="panel panel-default">
-                <div class="panel-heading">{{ title_case($user->name) }}</div>
+                <div class="panel-heading">
+                    <ol class="breadcrumb">
+                        <li><a href="{{ route('users.index') }}">Users</a></li>
+                        <li><a href="{{ route('users.show', $user->id) }}">{{ title_case($user->name) }}</a></li>
+                        <li class="active">Edit</li>
+                    </ol>
+                </div>
                 <div class="panel-body">
                     <form method="POST" action="{{ route('users.update', $user->id) }}" enctype="multipart/form-data">
                         {{ method_field('PUT') }}{{csrf_field()}}

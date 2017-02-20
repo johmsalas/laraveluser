@@ -21,7 +21,7 @@ class UserController extends Controller
             return redirect()->route('users.show', Auth::user()->id);
         }
 
-        $users = User::all();
+        $users = User::paginate(2);
         return view('users/list', [
             'users' => $users
         ]);
