@@ -18,6 +18,7 @@ class UsersTableSeeder extends Seeder
             'name' => 'admin',
             'email' => 'admin@mail.com',
             'password' => bcrypt('admin'),
+            'active' => true,
         ]);
         User::find(1)->roles()->attach(Role::where('name', 'administrator')->first()->id);
 
@@ -26,6 +27,7 @@ class UsersTableSeeder extends Seeder
             'name' => 'Agent Name',
             'email' => 'agent@mail.com',
             'password' => bcrypt('agent'),
+            'active' => true,
         ]);
         User::find(2)->roles()->attach(Role::where('name', 'agent')->first()->id);
 
@@ -34,6 +36,7 @@ class UsersTableSeeder extends Seeder
             'name' => 'Customer Name',
             'email' => 'customer@mail.com',
             'password' => bcrypt('customer'),
+            'active' => true,
         ]);
         User::find(3)->roles()->attach(Role::where('name', 'customer')->first()->id);
     }
