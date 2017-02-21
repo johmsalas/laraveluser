@@ -10,7 +10,7 @@
                     <ol class="breadcrumb">
                         <li class="active">Users</li>
                     </ol>
-                </div>
+                </div> 
                 <div class="panel-heading">
                     <div class="btn-group" role="group" aria-label="...">
                         <label class="btn btn-default btn-file">
