@@ -18,3 +18,15 @@ Vue.component('example', require('./components/Example.vue'));
 const app = new Vue({
     el: '#app'
 });
+
+
+
+/**
+ * Components
+ */
+
+// Submit OnChange functionality
+$(document).on('change', ':file.submit-on-change', function() {
+    var $form = $(this).closest("form");
+    $form.submit();
+});

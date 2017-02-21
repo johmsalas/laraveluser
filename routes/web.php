@@ -29,5 +29,5 @@ Route::group(['middleware' => 'auth'], function () {
     ]]);
 
     Route::get('users/export/{format}', ['as' => 'users-export', 'uses' => 'UserController@export']);
-    Route::get('users/import/{format}', ['as' => 'users-import', 'uses' => 'UserController@import']);
+    Route::post('users/import', ['as' => 'users-import', 'uses' => 'UserController@import']);
 });

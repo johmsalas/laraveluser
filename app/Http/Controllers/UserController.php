@@ -165,4 +165,64 @@ class UserController extends Controller
                 break;
         }
     }
+
+    public function import(Request $request) {
+
+        $successfulMessages = [];
+        $errorMessages = [];
+        $rejectedUsers = null;
+
+        if ($request->file('imported')->isValid()) {
+             $extension = strtolower($request->imported->extension());
+             $path = $request->imported->path();
+             $rejectedUsers = collect();
+             try {
+                 switch ($extension) {
+                     case 'xls':
+                         $rejectedUsers = $this->importRepository->importXLS($path);
+                         $successfulMessages[] = trans('The file was imported');
+                         break;
+                     case 'xlsx':
+                         $rejectedUsers = $this->importRepository->importXLSX($path);
+                         $successfulMessages[] = trans('The file was imported');
+                         break;
+                     case 'csv':
+                         $rejectedUsers = $this->importRepository->importCSV($path);
+                         $successfulMessages[] = trans('The file was imported');
+                         break;
+                     case 'tsv':
+                         $rejectedUsers = $this->importRepository->importTSV($path);
+                         $successfulMessages[] = trans('The file was imported');
+                         break;
+                     default:
+                         $errorMessages[] = trans('Unknown format:' . $extension);
+                         break;
+                 }
+             } catch (Exception $e) {
+
+             }
+        }
+
+        if ($rejectedUsers && $rejectedUsers->count() ) {
+            $notMigrated = trans('The following users were not included') . ': ' .
+                $rejectedUsers->reduce(function($carry, $user) {
+                    $output = '';
+                    if (!empty($user['name'])) {
+                        $output = $user['name'];
+                    } elseif (!empty($user['email'])) {
+                        $output = $user['email'];
+                    }
+
+                    if (!empty($output)) {
+                        $carry->push($output);
+                    }
+                    return $carry;
+                }, collect())->implode(', ');
+            $errorMessages[] = $notMigrated;
+        }
+
+        return back()
+            ->withErrors($errorMessages)
+            ->withSuccess($successfulMessages);
+    }
 }

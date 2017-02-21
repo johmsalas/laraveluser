@@ -4,6 +4,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
+            @include('partials.alerts')
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <ol class="breadcrumb">
@@ -12,7 +13,12 @@
                 </div>
                 <div class="panel-heading">
                     <div class="btn-group" role="group" aria-label="...">
-                        <a class="btn btn-default" href="#">Import</a>
+                        <label class="btn btn-default btn-file">
+                            <form class="" action="{{ route('users-import') }}" method="post" enctype="multipart/form-data">
+                                {{csrf_field()}}
+                                Import <input name="imported" class="submit-on-change" type="file" style="display: none;">
+                            </form>
+                        </label>
                         <div class="btn-group" role="group">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Export

@@ -15,15 +15,7 @@
                 <div class="panel-body">
                     <form method="POST" action="{{ route('users.update', $user->id) }}" enctype="multipart/form-data">
                         {{ method_field('PUT') }}{{csrf_field()}}
-                        @if (count($errors) > 0)
-                            <div class="alert alert-danger">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
+                        @include('partials.alerts')
                         <div class="form-group">
                             <label for="name">Name</label>
                             <input name="name" value="{{ old('name', $user->name) }}" type="text" class="form-control" id="name" placeholder="User's name">
