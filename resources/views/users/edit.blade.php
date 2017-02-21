@@ -38,6 +38,15 @@
                                 </span>
                             @endif
                         </div>
+                        <div class="form-group">
+                            <label for="phone">Phone number</label>
+                            <input name="phone" value="{{ $user->phone }}" type="text" class="form-control" id="phone" placeholder="Phone number">
+                            @if ($errors->has('phone'))
+                                <span class="help-block">
+                                    <strong>{{ old('phone', $errors->first('phone')) }}</strong>
+                                </span>
+                            @endif
+                        </div>
                         @can ('edit roles')
                             <div class="form-group">
                                 <label for="email">Roles</label>

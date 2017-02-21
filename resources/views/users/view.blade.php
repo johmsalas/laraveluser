@@ -19,14 +19,18 @@
                     <form method="POST" action="{{ route('users.update', $user->id) }}" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="name">Name</label>
-                            <input name="name" value="{{ $user->name }}" type="text" class="form-control" id="name" placeholder="User's name" readonly="readonly">
+                            <p>{{ $user->name }}</p>
                         </div>
                         <div class="form-group">
                             <label for="email">Email address</label>
-                            <input name="email" value="{{ $user->email }}" type="email" class="form-control" id="email" placeholder="Email address" readonly="readonly">
+                            <p>{{ $user->email }}</p>
                         </div>
                         <div class="form-group">
-                            <label for="email">Roles</label>
+                            <label for="phone">Phone number</label>
+                            <p>{{ $user->phone }}</p>
+                        </div>
+                        <div class="form-group">
+                            <label for="roles">Roles</label>
                             <p>{{ $roles }}</p>
                         </div>
                         @if (Auth::user()->can('edit users') || Auth::user()->can('edit own user', $user))
