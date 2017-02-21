@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Socialite;
 use App\User;
+use App\Role;
 
 class FacebookAuthController extends Controller
 {
@@ -54,6 +55,7 @@ class FacebookAuthController extends Controller
                 'facebook_id' => $fbUser->id,
                 'active' => true,
             ]);
+            $user->roles()->attach(Role::where('name', 'customer')->first()->id);
         }
 
         \Auth::login($user, true);

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use App\ActivationService;
-
+use App\Role;
 
 class RegisterController extends Controller
 {
@@ -56,6 +56,7 @@ class RegisterController extends Controller
         }
 
         $user = $this->create($request->all());
+        $user->roles()->attach(Role::where('name', 'customer')->first()->id);
         $this->activationService->sendActivationMail($user);
 
         return redirect('/login')->with('status', 'We sent you an activation code. Check your email.');

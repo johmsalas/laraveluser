@@ -46,5 +46,17 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'create users',
             'label' => 'Create users',
         ]);
+
+        DB::table('permissions')->insert([
+            'id' => 7,
+            'name' => 'see own user',
+            'label' => 'See own users',
+        ]);
+
+        DB::table('permissions')->insert([
+            'id' => 8,
+            'name' => 'edit roles',
+            'label' => 'Edit roles',
+        ]);
     }
 }

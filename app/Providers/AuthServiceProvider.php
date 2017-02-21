@@ -29,6 +29,11 @@ class AuthServiceProvider extends ServiceProvider{
         if (Schema::hasTable('permissions')) {
             foreach ($this->getPermissions() as $permission) {
                 Gate::define($permission->name, function ($user, $userTarget = null) use ($permission) {
+                    if($permission=='see own user') {
+                        var_dump($user);
+                        var_dump($userTarget);
+                        exit();
+                    }
                     $typeOwn = strpos($permission, ' own ') > 0;
                     return (!$typeOwn && $user->hasPermission($permission)) ||
                         ($typeOwn && $userTarget->id == $user->id);

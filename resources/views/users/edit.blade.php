@@ -7,7 +7,11 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <ol class="breadcrumb">
-                        <li><a href="{{ route('users.index') }}">Users</a></li>
+                        @can ('see users')
+                            <li><a href="{{ route('users.index') }}">Users</a></li>
+                        @else
+                            <li>Users</li>
+                        @endcan
                         <li><a href="{{ route('users.show', $user->id) }}">{{ title_case($user->name) }}</a></li>
                         <li class="active">Edit</li>
                     </ol>
@@ -34,20 +38,22 @@
                                 </span>
                             @endif
                         </div>
-                        <div class="form-group">
-                            <label for="email">Roles</label>
-                            <div class="permissions">
-                                @foreach ($roles as $role)
-                                    <div class="role checkbox">
-                                        <label>
-                                            <input name="roles[]" type="checkbox" value="{{ $role->id }}"
-                                                {{ ($user->hasRole($role->name)) ? 'checked="checked"' : '' }}>
-                                            {{ $role->label }}
-                                        </label>
-                                    </div>
-                                @endforeach
+                        @can ('edit roles')
+                            <div class="form-group">
+                                <label for="email">Roles</label>
+                                <div class="permissions">
+                                    @foreach ($roles as $role)
+                                        <div class="role checkbox">
+                                            <label>
+                                                <input name="roles[]" type="checkbox" value="{{ $role->id }}"
+                                                    {{ ($user->hasRole($role->name)) ? 'checked="checked"' : '' }}>
+                                                {{ $role->label }}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                </div>
                             </div>
-                        </div>
+                        @endcan
                         <button type="submit" class="btn btn-default">Save</button>
                     </form>
                 </div>

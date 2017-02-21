@@ -9,7 +9,7 @@
                     <ol class="breadcrumb">
                         @can ('see users')
                             <li><a href="{{ route('users.index') }}">Users</a></li>
-                        @elsecan
+                        @else
                             <li>Users</li>
                         @endcan
                         <li class="active">{{ title_case($user->name) }}</li>
@@ -29,8 +29,12 @@
                             <label for="email">Roles</label>
                             <p>{{ $roles }}</p>
                         </div>
-                        <a href="{{ route('users.edit', $user->id) }}" class="btn btn-default">Edit</a>
-                        <a href="#" class="btn btn-default">Remove</a>
+                        @if (Auth::user()->can('edit users') || Auth::user()->can('edit own user', $user))
+                            <a href="{{ route('users.edit', $user->id) }}" class="btn btn-default">Edit</a>
+                        @endif
+                        @can ('delete users')
+                            <a href="#" class="btn btn-default">Remove</a>
+                        @endcan
                     </form>
                 </div>
             </div>

@@ -22,7 +22,7 @@ class ActivationService
     public function sendActivationMail($user)
     {
 
-        if ($user->activated || !$this->shouldSend($user)) {
+        if ($user->active || !$this->shouldSend($user)) {
             return;
         }
 
@@ -48,7 +48,7 @@ class ActivationService
 
         $user = User::find($activation->user_id);
 
-        $user->activated = true;
+        $user->active = true;
 
         $user->save();
 

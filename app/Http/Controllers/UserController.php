@@ -123,7 +123,9 @@ class UserController extends Controller
         ]);
 
         $user->fill($request->all())->save();
-        $user->roles()->sync($request->input('roles'));
+        if (Auth::user()->can('edit roles')) {
+            $user->roles()->sync($request->input('roles'));
+        }        
 
         return redirect()->route('users.show', $user->id);
     }
@@ -148,6 +150,11 @@ class UserController extends Controller
     }
 
     public function export($format = 'xlsx') {
+
+        if (Gate::denies('see users')) {
+            return redirect()->route('users.show', Auth::user()->id);
+        }
+
         $filename = date('Y-m-d') . ' ' . trans('Users');
         $users = User::select('name', 'email', 'phone')->get();
         switch ($format) {
@@ -167,6 +174,10 @@ class UserController extends Controller
     }
 
     public function import(Request $request) {
+
+        if (Gate::denies('edit users') && Gate::denies('edit own user', $user)) {
+            return redirect()->route('users.show', Auth::user()->id);
+        }
 
         $successfulMessages = [];
         $errorMessages = [];
