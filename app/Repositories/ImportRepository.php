@@ -8,14 +8,26 @@ use Validator;
 
 class ImportRepository
 {
+    /**
+     * imports users from a xls file provided
+     * @param  string $filepath
+     */
     public function importXLS($filepath) {
         return $this->excelImport($filepath);
     }
 
+    /**
+     * imports users from a xlsx file provided
+     * @param  string $filepath
+     */
     public function importXLSX($filepath) {
         return $this->excelImport($filepath);
     }
 
+    /**
+     * imports users from a tsv file provided
+     * @param  string $filepath
+     */
     public function importTSV($filepath) {
         // Another way to do this is using laravel-excel which support tsv
         return $this->SVExport('tsv', $collection, function (&$vals, $key, $output) {
@@ -23,6 +35,10 @@ class ImportRepository
         }, $name);
     }
 
+    /**
+     * imports users from a csv file provided
+     * @param  string $filepath
+     */
     public function importCSV($filepath) {
         // Another way to do this is using laravel-excel which support csv
         return $this->SVExport('csv', $collection, function (&$vals, $key, $output) {
@@ -40,6 +56,10 @@ class ImportRepository
         fclose($outstream);
     }
 
+    /**
+     * Import the users given an Excel file
+     * @param string $filepath
+     */
     private function excelImport($filepath) {
         $importRepository = $this;
         $rejectedUsers = collect();
@@ -77,6 +97,12 @@ class ImportRepository
         return $rejectedUsers;
     }
 
+    /**
+     * Checks if the files provided for a user are completed and valid
+     * @param  User  $user
+     * @param  array  $existingEmails
+     * @return boolean
+     */
     private function isValidUser($user, $existingEmails = []) {
         $validator = Validator::make($user, [
             'name' => 'required|max:150',

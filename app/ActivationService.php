@@ -7,18 +7,44 @@ use App\Repositories\ActivationRepository;
 
 class ActivationService
 {
+    /**
+     * Mailer provider
+     *
+     * @var Mailer
+     */
     protected $mailer;
 
+    /**
+     * Activation repository
+     *
+     * @var ActivationRepository
+     */
     protected $activationRepo;
 
+    /**
+     * Resend flag
+     *
+     * @var int
+     */
     protected $resendAfter = 24;
 
+    /**
+     * The constructor of ActivationService
+     *
+     * @param Mailer $mailer
+     * @param ActivationRepository $activationRepo
+     */
     public function __construct(Mailer $mailer, ActivationRepository $activationRepo)
     {
         $this->mailer = $mailer;
         $this->activationRepo = $activationRepo;
     }
 
+    /**
+     * Sends the activation email to the user
+     *
+     * @param User $user
+     */
     public function sendActivationMail($user)
     {
 
@@ -34,10 +60,13 @@ class ActivationService
         $this->mailer->raw($message, function (Message $m) use ($user) {
             $m->to($user->email)->subject('Activation mail');
         });
-
-
     }
 
+    /**
+     * Activates the user
+     *
+     * @param User $user
+     */
     public function activateUser($token)
     {
         $activation = $this->activationRepo->getActivationByToken($token);
@@ -47,17 +76,18 @@ class ActivationService
         }
 
         $user = User::find($activation->user_id);
-
         $user->active = true;
-
         $user->save();
-
         $this->activationRepo->deleteActivation($token);
-
         return $user;
 
     }
 
+    /**
+     * Check whether the activation email should or not be sent
+     *
+     * @param User $user
+     */
     private function shouldSend($user)
     {
         $activation = $this->activationRepo->getActivation($user);

@@ -25,6 +25,11 @@ class RegisterController extends Controller
 
     use RegistersUsers;
 
+    /**
+     * Service to activate the user
+     *
+     * @var mix
+     */
     protected $activationService;
 
     /**
@@ -45,6 +50,13 @@ class RegisterController extends Controller
         $this->middleware('guest');
     }
 
+    /**
+     * Registers a new user
+     *
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function register(Request $request)
     {
         $validator = $this->validator($request->all());

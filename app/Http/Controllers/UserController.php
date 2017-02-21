@@ -12,9 +12,26 @@ use App\Role;
 
 class UserController extends Controller
 {
+    /**
+     * The repository for exporting
+     *
+     * @var mix
+     */
     protected $exportRepository;
+
+    /**
+     * The repository for importing
+     *
+     * @var mix
+     */
     protected $importRepository;
 
+    /**
+     * The constructor of UserController
+     *
+     * @param ExportRepository $exportRepository
+     * @param ImportRepository $importRepository
+     */
     public function __construct(
         ExportRepository $exportRepository,
         ImportRepository $importRepository
@@ -125,7 +142,7 @@ class UserController extends Controller
         $user->fill($request->all())->save();
         if (Auth::user()->can('edit roles')) {
             $user->roles()->sync($request->input('roles'));
-        }        
+        }
 
         return redirect()->route('users.show', $user->id);
     }
@@ -149,6 +166,11 @@ class UserController extends Controller
             ->with('message', $user . ' ' . trans('was deleted'));
     }
 
+    /**
+     * Prints in the output buffer the list of users according to the format provided
+     *
+     * @param  string $format
+     */
     public function export($format = 'xlsx') {
 
         if (Gate::denies('see users')) {
@@ -173,6 +195,11 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Imports the users provided though post params
+     *
+     * @param Request $request
+     */
     public function import(Request $request) {
 
         if (Gate::denies('edit users') && Gate::denies('edit own user', $user)) {
