@@ -211,7 +211,8 @@ class UserController extends Controller
         $rejectedUsers = null;
 
         if ($request->file('imported')->isValid()) {
-             $extension = strtolower($request->imported->extension());
+             // Some how $request->imported->extension() is not retrieving the rigth ext
+             $extension = strtolower($request->imported->getClientOriginalExtension());
              $path = $request->imported->path();
              $rejectedUsers = collect();
              try {
@@ -242,7 +243,7 @@ class UserController extends Controller
         }
 
         if ($rejectedUsers && $rejectedUsers->count() ) {
-            $notMigrated = trans('The following users were not included') . ': ' .
+            $notMigrated = trans('Some users were not included') . ': ' .
                 $rejectedUsers->reduce(function($carry, $user) {
                     $output = '';
                     if (!empty($user['name'])) {

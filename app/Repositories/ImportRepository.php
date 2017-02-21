@@ -30,9 +30,7 @@ class ImportRepository
      */
     public function importTSV($filepath) {
         // Another way to do this is using laravel-excel which support tsv
-        return $this->SVExport('tsv', $collection, function (&$vals, $key, $output) {
-            fputcsv($output, $vals, "\t", '"');
-        }, $name);
+        return $this->SVImport($filepath, "\t");
     }
 
     /**
@@ -41,19 +39,63 @@ class ImportRepository
      */
     public function importCSV($filepath) {
         // Another way to do this is using laravel-excel which support csv
-        return $this->SVExport('csv', $collection, function (&$vals, $key, $output) {
-            fputcsv($output, $vals, ';', '"');
-        }, $name);
+        return $this->SVImport($filepath, ',');
     }
 
-    private function SVExport($format, $collection, $formatter, $name = 'file') {
-        header('Content-Type: text/' . $format . '; charset=utf-8');
-        header('Content-Disposition: attachment; filename=' . $name . '.' . $format);
+    private function SVImport($filepath, $separator = ',') {
+        $importRepository = $this;
+        $rejectedUsers = collect();
+        $output = [];
+        try {
+            $users = [];
+            $file = fopen($filepath, 'r');
+            while (!feof($file)) {
+                $users[] = fgetcsv($file, 0, $separator);
+            }
+            fclose($file);
+            $users = collect($users)->map(function($user) {
+                return [
+                    'name' => empty($user[0]) ? '' : $user[0],
+                    'email' => empty($user[1]) ? '' : $user[1],
+                    'phone' => empty($user[2]) ? '' : $user[2],
+                ];
+            });
+            $importRepository->importUsers($users)->map(function($user) use ($rejectedUsers) {
+                $rejectedUsers->push($user);
+            });
+        } catch (Exception $e) {
 
-        $data = $collection->toArray();
-        $outstream = fopen("php://output", 'w');
-        array_walk($data, $formatter, $outstream);
-        fclose($outstream);
+        }
+        return $rejectedUsers;
+    }
+
+    /**
+     * Validate and import the users
+     * @var Collect<User> $users
+     */
+    private function importUsers($users) {
+        $importRepository = $this;
+        $rejectedUsers = collect();
+        // Get emails that will be imported
+        $emails = $users->pluck('email');
+        // Check those emails that are already in the database.
+        $repeatedEmails = (count($emails) > 0) ?
+            User::whereIn('email', $emails)->get()->pluck('email')->toArray() : [];
+        // Filter invalid users
+        $users = $users->filter(function($user) use (
+            $repeatedEmails,
+            $importRepository,
+            $rejectedUsers
+        ) {
+            $valid = $importRepository->isValidUser($user, $repeatedEmails);
+            if (!$valid) {
+                $rejectedUsers->push($user);
+            }
+            $repeatedEmails[] = $user['email'];
+            return $valid;
+        });
+        User::insert($users->toArray());
+        return $rejectedUsers;
     }
 
     /**
@@ -72,26 +114,9 @@ class ImportRepository
                         'phone' => $user->phone,
                     ];
                 });
-                // Get emails that will be imported
-                $emails = $users->pluck('email');
-                // Check those emails that are already in the database.
-                $repeatedEmails = (count($emails) > 0) ?
-                    User::whereIn('email', $emails)->get()->pluck('email')->toArray() : [];
-                // Filter invalid users
-                $users = $users->filter(function($user) use (
-                    $repeatedEmails,
-                    $importRepository,
-                    $rejectedUsers
-                ) {
-                    $valid = $importRepository->isValidUser($user, $repeatedEmails);
-                    if (!$valid) {
-                        $rejectedUsers->push($user);
-                    }
-                    $repeatedEmails[] = $user['email'];
-
-                    return $valid;
+                $importRepository->importUsers($users)->map(function($user) use ($rejectedUsers) {
+                    $rejectedUsers->push($user);
                 });
-                User::insert($users->toArray());
             });
         });
         return $rejectedUsers;

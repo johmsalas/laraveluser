@@ -32,7 +32,7 @@ class ExportRepository
     public function downloadTSV($name, $collection) {
         // Another way to do this is using laravel-excel which support tsv
         $this->SVExport('tsv', $collection, function (&$vals, $key, $output) {
-            fputcsv($output, $vals, "\t", '"');
+            fputcsv($output, $vals, "\t", '"', "\n");
         }, $name);
     }
 
@@ -44,7 +44,7 @@ class ExportRepository
     public function downloadCSV($name, $collection) {
         // Another way to do this is using laravel-excel which support csv
         $this->SVExport('csv', $collection, function (&$vals, $key, $output) {
-            fputcsv($output, $vals, ';', '"');
+            fputcsv($output, $vals, ',', '"', "\n");
         }, $name);
     }
 
